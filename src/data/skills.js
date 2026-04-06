@@ -1,0 +1,68 @@
+export const skillCategories = [
+  {
+    id: 'ai-engineering',
+    label: 'AI Engineering Core',
+    color: '#00FF9C',
+    skills: [
+      { name: 'LangGraph', level: 'proficient' },
+      { name: 'LangChain', level: 'proficient' },
+      { name: 'RAG Pipelines', level: 'proficient' },
+      { name: 'LLM-as-a-Judge', level: 'proficient' },
+      { name: 'Prompt Engineering', level: 'strong' },
+      { name: 'NLP & Tokenization', level: 'proficient' },
+      { name: 'MCP (Model Context Protocol)', level: 'familiar' },
+    ],
+  },
+  {
+    id: 'infrastructure-apis',
+    label: 'LLM APIs & Vector DBs',
+    color: '#22D3EE',
+    skills: [
+      { name: 'Groq API', level: 'proficient' },
+      { name: 'Claude API', level: 'proficient' },
+      { name: 'Gemini API', level: 'proficient' },
+      { name: 'FAISS', level: 'proficient' },
+      { name: 'ChromaDB', level: 'proficient' },
+      { name: 'pgvector / Redis', level: 'proficient' },
+    ],
+  },
+  {
+    id: 'backend-databases',
+    label: 'Backend & Databases',
+    color: '#7B61FF',
+    skills: [
+      { name: 'Python (FastAPI)', level: 'expert' },
+      { name: 'JavaScript (NestJS)', level: 'proficient' },
+      { name: 'PostgreSQL', level: 'proficient', note: 'iOPEX — production' },
+      { name: 'SQL Server', level: 'proficient', note: 'Krion — production' },
+      { name: 'MySQL / BigQuery', level: 'familiar' },
+      { name: 'REST APIs & JWT Auth', level: 'proficient' },
+    ],
+  },
+  {
+    id: 'data-analytics',
+    label: 'Data Science & Analytics',
+    color: '#FBBF24',
+    skills: [
+      { name: 'Data Stack (Pandas, NumPy)', level: 'proficient' },
+      { name: 'Scikit-learn', level: 'proficient' },
+      { name: 'OpenCV', level: 'familiar' },
+      { name: 'Google Analytics', level: 'certified' },
+      { name: 'Tableau', level: 'familiar' },
+      { name: 'Excel / Data Analytics', level: 'certified' },
+    ],
+  },
+  {
+    id: 'frontend-devops',
+    label: 'Frontend & Workflow Tools',
+    color: '#FF6B35',
+    skills: [
+      { name: 'React & TypeScript', level: 'proficient' },
+      { name: 'Tailwind CSS / Vite', level: 'proficient' },
+      { name: 'Docker', level: 'proficient' },
+      { name: 'n8n & Apify', level: 'proficient' },
+      { name: 'LangSmith', level: 'familiar' },
+      { name: 'Git / GitHub', level: 'proficient' },
+    ],
+  },
+];
