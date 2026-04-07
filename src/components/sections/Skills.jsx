@@ -45,8 +45,8 @@ function SkillConstellation() {
   const [dimensions, setDimensions] = useState({ width: 800, height: 420 });
 
   const isMobile = dimensions.width < 768;
-  const skillsPerCat = isMobile ? 2 : 4;
-  const containerHeight = isMobile ? 300 : 420;
+  const skillsPerCat = isMobile ? 2 : 3;  // fewer nodes = cleaner
+  const containerHeight = isMobile ? 340 : 500;
 
   // Resize handler
   useEffect(() => {
@@ -86,7 +86,7 @@ function SkillConstellation() {
       const shortLabel = SHORT_LABELS[cat.label] || cat.label;
       nodes.push({
         id: cat.id, label: shortLabel, type: 'category',
-        color: cat.color, radius: isMobile ? 14 : 18,
+        color: cat.color, radius: isMobile ? 16 : 22,
       });
       links.push({ source: 'shanttoosh', target: cat.id });
 
@@ -95,25 +95,25 @@ function SkillConstellation() {
         nodes.push({
           id: skillId, label: skill.name, type: 'skill',
           color: cat.color, categoryId: cat.id,
-          radius: isMobile ? 7 : 10, level: skill.level,
+          radius: isMobile ? 9 : 12, level: skill.level,
         });
         links.push({ source: cat.id, target: skillId });
       });
     });
 
-    // Simulation
+    // Simulation — wider spacing, stronger repulsion
     const simulation = d3.forceSimulation(nodes)
       .force('link', d3.forceLink(links).id(d => d.id).distance(d => {
-        if (d.target.type === 'category') return isMobile ? 60 : 90;
-        return isMobile ? 35 : 55;
-      }).strength(0.8))
+        if (d.target.type === 'category') return isMobile ? 90 : 150;  // much wider
+        return isMobile ? 55 : 85;                                       // wider leaves
+      }).strength(0.5))
       .force('charge', d3.forceManyBody().strength(d => {
-        if (d.type === 'center') return isMobile ? -300 : -600;
-        if (d.type === 'category') return isMobile ? -100 : -200;
-        return isMobile ? -40 : -80;
+        if (d.type === 'center') return isMobile ? -500 : -1200;   // stronger push
+        if (d.type === 'category') return isMobile ? -200 : -400;
+        return isMobile ? -80 : -150;
       }))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(d => d.radius + (isMobile ? 4 : 8)));
+      .force('collision', d3.forceCollide().radius(d => d.radius + (isMobile ? 12 : 20)));
 
     // Draw links
     const link = svg.append('g')
