@@ -88,8 +88,8 @@ export default function Chatbot() {
 
   // Auto-scroll when messages change or streaming updates
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length > 0 && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }, [messages, isStreaming]);
 
