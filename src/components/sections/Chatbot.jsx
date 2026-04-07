@@ -138,7 +138,7 @@ export default function Chatbot({ onThinkingChange }) {
           </p>
         </motion.div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 20 }}>
+        <div className="flex flex-col lg:grid lg:grid-cols-[320px_1fr] gap-5">
 
           {/* LEFT — Suggested */}
           <motion.div

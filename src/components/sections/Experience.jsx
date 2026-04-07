@@ -1,17 +1,59 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, MapPin, Calendar } from 'lucide-react';
 import { experiences, education } from '../../data/experience';
 import SectionLabel from '../ui/SectionLabel';
-
-function hexToRgb(hex) {
-  const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return res ? `${parseInt(res[1],16)},${parseInt(res[2],16)},${parseInt(res[3],16)}` : '0,255,156';
-}
+import { hexToRgb } from '../../utils/colors';
 
 function ExperienceCard({ exp, index }) {
   const rgb = hexToRgb(exp.color);
   const isLeft = index % 2 === 0;
+
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' && window.innerWidth < 768
+  );
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
+  const cardStyle = {
+    background: 'rgba(13,20,36,0.7)',
+    backdropFilter: 'blur(16px)',
+    border: `1px solid rgba(${rgb},0.2)`,
+    borderRadius: 0,
+    padding: '24px',
+    position: 'relative',
+    boxShadow: `0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(${rgb},0.05)`,
+    transition: 'all 0.3s ease',
+  };
+
+  const handleEnter = (e) => {
+    e.currentTarget.style.borderColor = `rgba(${rgb},0.4)`;
+    e.currentTarget.style.boxShadow = `0 16px 48px rgba(0,0,0,0.4), 0 0 30px rgba(${rgb},0.1)`;
+  };
+  const handleLeave = (e) => {
+    e.currentTarget.style.borderColor = `rgba(${rgb},0.2)`;
+    e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(${rgb},0.05)`;
+  };
+
+  if (isMobile) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.5, delay: index * 0.1 }}
+        style={{ marginBottom: 24 }}
+      >
+        <div style={cardStyle} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+          <CardContent exp={exp} rgb={rgb} />
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -29,19 +71,7 @@ function ExperienceCard({ exp, index }) {
     >
       {/* Left card or spacer */}
       {isLeft ? (
-        <div style={{
-          background: 'rgba(13,20,36,0.7)',
-          backdropFilter: 'blur(16px)',
-          border: `1px solid rgba(${rgb},0.2)`,
-          borderRadius: 0,
-          padding: '24px',
-          position: 'relative',
-          boxShadow: `0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(${rgb},0.05)`,
-          transition: 'all 0.3s ease',
-        }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = `rgba(${rgb},0.4)`; e.currentTarget.style.boxShadow = `0 16px 48px rgba(0,0,0,0.4), 0 0 30px rgba(${rgb},0.1)`; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = `rgba(${rgb},0.2)`; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(${rgb},0.05)`; }}
-        >
+        <div style={cardStyle} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
           <CardContent exp={exp} rgb={rgb} />
         </div>
       ) : <div />}
@@ -62,19 +92,7 @@ function ExperienceCard({ exp, index }) {
 
       {/* Right card or spacer */}
       {!isLeft ? (
-        <div style={{
-          background: 'rgba(13,20,36,0.7)',
-          backdropFilter: 'blur(16px)',
-          border: `1px solid rgba(${rgb},0.2)`,
-          borderRadius: 0,
-          padding: '24px',
-          position: 'relative',
-          boxShadow: `0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(${rgb},0.05)`,
-          transition: 'all 0.3s ease',
-        }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = `rgba(${rgb},0.4)`; e.currentTarget.style.boxShadow = `0 16px 48px rgba(0,0,0,0.4), 0 0 30px rgba(${rgb},0.1)`; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = `rgba(${rgb},0.2)`; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(${rgb},0.05)`; }}
-        >
+        <div style={cardStyle} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
           <CardContent exp={exp} rgb={rgb} />
         </div>
       ) : <div />}
@@ -143,6 +161,16 @@ function CardContent({ exp, rgb }) {
 }
 
 export default function Experience() {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' && window.innerWidth < 768
+  );
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
   return (
     <section id="experience" style={{ padding: '80px 24px', position: 'relative', zIndex: 10 }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
@@ -164,15 +192,17 @@ export default function Experience() {
 
         {/* Timeline axis line */}
         <div style={{ position: 'relative' }}>
-          <div style={{
-            position: 'absolute',
-            left: '50%',
-            top: 0,
-            bottom: 0,
-            width: 1,
-            background: 'linear-gradient(to bottom, transparent, rgba(0,255,156,0.3) 10%, rgba(0,255,156,0.3) 90%, transparent)',
-            transform: 'translateX(-50%)',
-          }} />
+          {!isMobile && (
+            <div style={{
+              position: 'absolute',
+              left: '50%',
+              top: 0,
+              bottom: 0,
+              width: 1,
+              background: 'linear-gradient(to bottom, transparent, rgba(0,255,156,0.3) 10%, rgba(0,255,156,0.3) 90%, transparent)',
+              transform: 'translateX(-50%)',
+            }} />
+          )}
 
           {/* Experience cards */}
           {experiences.map((exp, i) => (

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { SYSTEM_PROMPT } from '../data/systemPrompt';
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL = 'llama-3.1-8b-instant';
+const MODEL = 'llama-3.3-70b-versatile';
 
 export function useGroqChat() {
   const [messages, setMessages] = useState([]);
@@ -52,7 +52,7 @@ export function useGroqChat() {
             ...newMessages,
           ],
           stream: true,
-          max_tokens: 800,
+          max_tokens: 1200,
           temperature: 0.65,
         }),
         signal: abortRef.current.signal,

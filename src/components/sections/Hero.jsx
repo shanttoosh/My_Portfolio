@@ -44,7 +44,7 @@ export default function Hero({ onChatClick }) {
 
   return (
     <section id="home" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', padding: '80px 24px 40px', position: 'relative', zIndex: 10 }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 w-full max-w-[1200px] mx-auto">
 
         {/* LEFT */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
@@ -92,8 +92,20 @@ export default function Hero({ onChatClick }) {
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <h1
-              className="holo-text"
-              style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(36px, 5.5vw, 68px)', fontWeight: 700, lineHeight: 1.1, marginBottom: 10 }}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(42px, 6vw, 72px)',
+                fontWeight: 800,
+                lineHeight: 1.1,
+                background: 'linear-gradient(135deg, #00FF9C 0%, #7B61FF 25%, #22D3EE 50%, #FF6B35 75%, #00FF9C 100%)',
+                backgroundSize: '300% 300%',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                animation: 'holoShimmer 4s ease infinite',
+                display: 'inline-block',
+                marginBottom: 10,
+              }}
             >
               Shanttoosh V
             </h1>

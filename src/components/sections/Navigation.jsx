@@ -19,6 +19,7 @@ export default function Navigation() {
     { id: 'projects', label: 'Projects' },
     { id: 'experience', label: 'Experience' },
     { id: 'skills', label: 'Skills' },
+    { id: 'tools', label: 'Tools' },
     { id: 'chat', label: 'AI Chat' },
     { id: 'contact', label: 'Contact' },
   ];
