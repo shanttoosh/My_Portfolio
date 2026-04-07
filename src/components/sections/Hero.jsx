@@ -6,7 +6,7 @@ import TypeWriter from '../ui/TypeWriter';
 const stats = [
   { value: '7', label: 'Projects Built' },
   { value: '3', label: 'Roles' },
-  { value: '2+', label: 'Years Building AI' },
+  { value: '1+', label: 'Years Building AI' },
 ];
 
 function CountUp({ target }) {
