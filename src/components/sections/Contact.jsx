@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Terminal } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { Github, Linkedin } from '../ui/Icons';
 import SectionLabel from '../ui/SectionLabel';
 import { hexToRgb } from '../../utils/colors';
@@ -16,13 +16,14 @@ function TypedStatus() {
   return (
     <div style={{
       background: 'rgba(0,0,0,0.5)',
-      border: '1px solid rgba(0,255,156,0.15)',
+      border: '1px solid rgba(255,255,255,0.07)',
       borderRadius: 0,
       padding: '16px',
       fontFamily: 'var(--font-mono)',
       fontSize: 12,
       lineHeight: 2,
-      marginTop: 24,
+      marginTop: 32,
+      textAlign: 'left'
     }}>
       {lines.map((l, i) => (
         <div key={i} style={{ color: l.color }}>{l.text}</div>
@@ -55,76 +56,79 @@ const contactLinks = [
 export default function Contact() {
   return (
     <section id="contact" style={{ padding: '80px 24px', position: 'relative', zIndex: 10 }}>
-      <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
+      <div style={{ maxWidth: 560, margin: '0 auto', textAlign: 'center' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ marginBottom: 48 }}
+          style={{ marginBottom: 32 }}
         >
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-            <SectionLabel>CONTACT.INIT</SectionLabel>
-          </div>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 700, color: '#E2E8F0' }}>
-            Let's Build{' '}
-            <span style={{ color: '#FF6B35', textShadow: '0 0 30px rgba(255,107,53,0.4)' }}>Something</span>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, color: '#E2E8F0' }}>
+            Let's build something.
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 15, color: 'rgba(148,163,184,0.7)', marginTop: 12 }}>
-            The fastest way to reach Shanttoosh:
-          </p>
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: 15, color: 'rgba(226,232,240,0.5)', lineHeight: 1.7, marginTop: 12 }}>
+            Open to remote AI roles and part-time freelance.<br />
+            Usually reply within 24 hours.
+          </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{
-            background: 'rgba(13,20,36,0.7)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid rgba(0,255,156,0.15)',
-            borderRadius: 0,
-            padding: '32px',
-            boxShadow: '0 0 40px rgba(0,255,156,0.05), 0 20px 60px rgba(0,0,0,0.4)',
-          }}
+          transition={{ delay: 0.1 }}
         >
           {/* Contact links */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {contactLinks.map(link => {
               const Icon = link.icon;
-              const rgb = hexToRgb(link.color);
               return (
                 <a
                   key={link.href}
                   href={link.href}
                   target={link.href.startsWith('mailto') ? '_self' : '_blank'}
                   rel="noopener noreferrer"
-                  data-clickable
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 12,
-                    padding: '12px 16px',
-                    border: `1px solid rgba(${rgb},0.2)`,
+                    justifyContent: 'space-between',
+                    padding: '16px 20px',
+                    border: '1px solid rgba(255,255,255,0.07)',
+                    background: 'rgba(11,17,32,0.6)',
                     borderRadius: 0,
-                    color: 'rgba(226,232,240,0.8)',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 13,
-                    transition: 'all 0.25s ease',
-                    background: 'transparent',
+                    marginTop: 8,
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = `rgba(${rgb},0.5)`;
-                    e.currentTarget.style.background = `rgba(${rgb},0.06)`;
-                    e.currentTarget.style.color = link.color;
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+                    e.currentTarget.style.background = 'rgba(11,17,32,0.9)';
+                    e.currentTarget.querySelector('.lbl').style.color = '#E2E8F0';
+                    e.currentTarget.querySelector('.arr').style.color = 'rgba(226,232,240,0.6)';
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = `rgba(${rgb},0.2)`;
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = 'rgba(226,232,240,0.8)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)';
+                    e.currentTarget.style.background = 'rgba(11,17,32,0.6)';
+                    e.currentTarget.querySelector('.lbl').style.color = 'rgba(226,232,240,0.7)';
+                    e.currentTarget.querySelector('.arr').style.color = 'rgba(148,163,184,0.3)';
                   }}
                 >
-                  <Icon size={16} style={{ color: link.color, flexShrink: 0 }} />
-                  {link.label}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <Icon size={16} style={{ color: link.color }} />
+                    <span 
+                      className="lbl" 
+                      style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'rgba(226,232,240,0.7)', transition: 'color 0.2s' }}
+                    >
+                      {link.label}
+                    </span>
+                  </div>
+                  <span 
+                    className="arr" 
+                    style={{ fontFamily: 'var(--font-mono)', color: 'rgba(148,163,184,0.3)', transition: 'color 0.2s' }}
+                  >
+                    →
+                  </span>
                 </a>
               );
             })}
@@ -132,7 +136,24 @@ export default function Contact() {
 
           <TypedStatus />
 
-
+          {/* Resume link */}
+          <div style={{ marginTop: 24, paddingBottom: 40 }}>
+            <a
+              href="/resume.pdf"
+              download="ShanttooshV_Resume.pdf"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 12,
+                color: 'rgba(148,163,184,0.4)',
+                textDecoration: 'none',
+                transition: 'color 0.2s'
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = 'rgba(226,232,240,0.7)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(148,163,184,0.4)'}
+            >
+              Download Resume (PDF) ↓
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>

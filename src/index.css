@@ -24,9 +24,14 @@
   --glass-bg: rgba(13, 20, 36, 0.65);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-blur: blur(16px);
-  --shadow-neon-green: 0 0 20px rgba(0, 255, 156, 0.3);
-  --shadow-neon-violet: 0 0 20px rgba(123, 97, 255, 0.3);
-  --shadow-neon-orange: 0 0 20px rgba(255, 107, 53, 0.3);
+  --surface-card: rgba(11, 17, 32, 0.80);
+  --border-card: rgba(255, 255, 255, 0.07);
+  --border-card-hover: rgba(255, 255, 255, 0.13);
+  --border-accent: rgba(0, 255, 156, 0.25);
+  --text-label: rgba(0, 255, 156, 0.7);
+  --shadow-neon-green: none;
+  --shadow-neon-violet: none;
+  --shadow-neon-orange: none;
   --font-display: 'Space Grotesk', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-body: 'Inter', sans-serif;
@@ -56,6 +61,10 @@ body {
   background: var(--bg-base);
   color: var(--text-primary);
   overflow-x: hidden;
+}
+
+#home, #projects, #experience, #skills, #tools, #chat, #contact {
+  scroll-margin-top: 70px;
 }
 
 ::selection {
@@ -486,21 +495,25 @@ a { color: inherit; text-decoration: none; }
 }
 
 @media (max-width: 768px) {
-  section#experience > div > div > div {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
-  }
-  section#experience > div > div > div > div:empty {
-    display: none !important;
-  }
-  section#experience > div > div > div > div:nth-child(2) {
-    display: none !important;
-  }
-  section#experience > div > div > div > div[style*="background"] {
-    width: 100% !important;
-  }
   #projects > div > div:last-child {
     grid-template-columns: 1fr !important;
   }
+}
+
+/* ═══════════════════════════════════════
+   CARD COMPONENT
+   ═══════════════════════════════════════ */
+
+.card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
+  border-radius: 0;
+  transition: border-color 250ms ease, transform 250ms ease;
+}
+.card:hover {
+  border-color: var(--border-card-hover);
+  transform: translateY(-2px);
+}
+.card--accent-top {
+  /* colored top border via inline style per card */
 }

@@ -38,15 +38,15 @@ function RenderLines({ text, accentColor = '#00FF9C' }) {
         const trimmed = line.trim();
         if (!trimmed) return <div key={i} style={{ height: 8 }} />;
 
-        let color = 'rgba(226,232,240,0.8)';
+        let color = 'rgba(226,232,240,0.75)';
         let fontWeight = 400;
 
         if (trimmed.startsWith('✅')) color = '#00FF9C';
         else if (trimmed.startsWith('⚠️')) color = '#FBBF24';
         else if (trimmed.startsWith('❌')) color = '#FF6B35';
         else if (trimmed.startsWith('**') && trimmed.endsWith('**')) {
-          color = '#E2E8F0';
-          fontWeight = 700;
+          color = '#fff';
+          fontWeight = 600;
         } else if (trimmed.startsWith('→') || trimmed.startsWith('-')) {
           color = accentColor;
         }
@@ -157,32 +157,26 @@ function ToolCard({ color, icon: Icon, title, subtitle, children, index }) {
   const rgb = hexToRgb(color);
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
+      viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="card"
       style={{
-        background: 'rgba(13,20,36,0.72)',
-        backdropFilter: 'blur(16px)',
-        border: `1px solid rgba(${rgb},0.2)`,
-        borderRadius: 0,
+        borderTop: `2px solid ${color}`,
         padding: 24,
         display: 'flex',
         flexDirection: 'column',
         gap: 16,
+        height: '100%'
       }}
     >
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-        <div style={{
-          width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: `rgba(${rgb},0.1)`, border: `1px solid rgba(${rgb},0.25)`,
-        }}>
-          <Icon size={18} style={{ color }} />
-        </div>
+        <Icon size={18} style={{ color, marginTop: 4 }} />
         <div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600, color: '#E2E8F0' }}>{title}</div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'rgba(148,163,184,0.6)', marginTop: 2 }}>{subtitle}</div>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: '#E2E8F0', marginTop: 10 }}>{title}</div>
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'rgba(226,232,240,0.5)', marginTop: 4 }}>{subtitle}</div>
         </div>
       </div>
       {children}
@@ -202,6 +196,7 @@ function JDMatchCard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+  const rgb = hexToRgb('#00FF9C');
 
   const analyse = async () => {
     if (!input.trim() || loading) return;
@@ -214,7 +209,7 @@ function JDMatchCard() {
       setOutput(result);
     } catch (err) {
       if (err.message === 'no-key') {
-        setError('> API unavailable — reach out directly at shanttoosh@gmail.com');
+        setError('> API unavailable — reach out at shanttoosh@gmail.com');
       } else {
         setError(`> ${err.message}`);
       }
@@ -228,29 +223,29 @@ function JDMatchCard() {
       <textarea
         value={input}
         onChange={e => setInput(e.target.value)}
-        placeholder="e.g. We need someone with LangGraph, FastAPI, RAG experience, team lead background, and Python expertise..."
-        rows={5}
+        placeholder="e.g. LangGraph, FastAPI, RAG experience..."
+        rows={4}
         disabled={loading}
         style={{
-          background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(0,255,156,0.15)',
+          background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)',
           fontFamily: 'var(--font-mono)', fontSize: 12, color: '#E2E8F0',
           padding: 12, resize: 'vertical', width: '100%', outline: 'none',
           borderRadius: 0,
         }}
-        onFocus={e => e.target.style.borderColor = 'rgba(0,255,156,0.4)'}
-        onBlur={e => e.target.style.borderColor = 'rgba(0,255,156,0.15)'}
+        onFocus={e => e.target.style.borderColor = 'rgba(255,255,255,0.18)'}
+        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
       />
       <button
         onClick={analyse}
         disabled={loading || !input.trim()}
         style={{
-          width: '100%', background: 'rgba(0,255,156,0.1)', border: '1px solid rgba(0,255,156,0.3)',
-          color: '#00FF9C', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em',
-          padding: 10, cursor: loading ? 'wait' : 'pointer', borderRadius: 0,
+          width: '100%', background: `rgba(${rgb},0.08)`, border: `1px solid rgba(${rgb},0.2)`,
+          color: '#00FF9C', fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.1em',
+          padding: '10px 16px', cursor: loading ? 'wait' : 'pointer', borderRadius: 0,
           opacity: loading || !input.trim() ? 0.6 : 1, transition: 'all 0.2s',
         }}
-        onMouseEnter={e => { if (!loading) e.currentTarget.style.background = 'rgba(0,255,156,0.2)'; }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(0,255,156,0.1)'; }}
+        onMouseEnter={e => { if (!loading) { e.currentTarget.style.background = `rgba(${rgb},0.15)`; e.currentTarget.style.borderColor = `rgba(${rgb},0.35)`; } }}
+        onMouseLeave={e => { e.currentTarget.style.background = `rgba(${rgb},0.08)`; e.currentTarget.style.borderColor = `rgba(${rgb},0.2)`; }}
       >
         {loading ? 'ANALYSING...' : 'ANALYSE MATCH'}
       </button>
@@ -259,15 +254,11 @@ function JDMatchCard() {
       )}
       {output && (
         <div style={{
-          background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(0,255,156,0.1)',
-          padding: 16, fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.8, borderRadius: 0,
+          background: 'rgba(0,0,0,0.3)', borderLeft: '2px solid #00FF9C',
+          padding: '14px 16px', fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.8, 
+          marginTop: 'auto', maxHeight: 220, overflowY: 'auto'
         }}>
           <RenderLines text={output} accentColor="#00FF9C" />
-        </div>
-      )}
-      {loading && !output && (
-        <div style={{ color: '#00FF9C', fontFamily: 'var(--font-mono)', fontSize: 12, animation: 'blink 1s step-end infinite' }}>
-          █
         </div>
       )}
     </ToolCard>
@@ -281,6 +272,8 @@ function BuildCard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+  const color = '#7B61FF';
+  const rgb = hexToRgb(color);
 
   const generate = async () => {
     if (!input.trim() || loading) return;
@@ -303,49 +296,45 @@ function BuildCard() {
   };
 
   return (
-    <ToolCard color="#7B61FF" icon={Lightbulb} title="What Would I Build?" subtitle="Describe your product — get a tailored AI architecture proposal" index={1}>
-      <input
+    <ToolCard color={color} icon={Lightbulb} title="What Would I Build?" subtitle="Describe your product — get a tailored AI architecture proposal" index={1}>
+      <textarea
         value={input}
         onChange={e => setInput(e.target.value)}
-        placeholder="e.g. We're a healthcare startup with patient records and doctors..."
+        placeholder="e.g. We're a healthcare startup with patient records..."
         disabled={loading}
-        onKeyDown={e => e.key === 'Enter' && generate()}
+        rows={4}
         style={{
-          background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(123,97,255,0.15)',
+          background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)',
           fontFamily: 'var(--font-mono)', fontSize: 12, color: '#E2E8F0',
-          padding: 12, width: '100%', outline: 'none', height: 44, borderRadius: 0,
+          padding: 12, width: '100%', outline: 'none', borderRadius: 0, resize: 'vertical'
         }}
-        onFocus={e => e.target.style.borderColor = 'rgba(123,97,255,0.4)'}
-        onBlur={e => e.target.style.borderColor = 'rgba(123,97,255,0.15)'}
+        onFocus={e => e.target.style.borderColor = 'rgba(255,255,255,0.18)'}
+        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
       />
       <button
         onClick={generate}
         disabled={loading || !input.trim()}
         style={{
-          width: '100%', background: 'rgba(123,97,255,0.1)', border: '1px solid rgba(123,97,255,0.3)',
-          color: '#7B61FF', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em',
-          padding: 10, cursor: loading ? 'wait' : 'pointer', borderRadius: 0,
+          width: '100%', background: `rgba(${rgb},0.08)`, border: `1px solid rgba(${rgb},0.2)`,
+          color: color, fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.1em',
+          padding: '10px 16px', cursor: loading ? 'wait' : 'pointer', borderRadius: 0,
           opacity: loading || !input.trim() ? 0.6 : 1, transition: 'all 0.2s',
         }}
-        onMouseEnter={e => { if (!loading) e.currentTarget.style.background = 'rgba(123,97,255,0.2)'; }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(123,97,255,0.1)'; }}
+        onMouseEnter={e => { if (!loading) { e.currentTarget.style.background = `rgba(${rgb},0.15)`; e.currentTarget.style.borderColor = `rgba(${rgb},0.35)`; } }}
+        onMouseLeave={e => { e.currentTarget.style.background = `rgba(${rgb},0.08)`; e.currentTarget.style.borderColor = `rgba(${rgb},0.2)`; }}
       >
-        {loading ? 'GENERATING...' : 'GENERATE PROPOSAL'}
+        {loading ? 'GENERATING...' : 'GENERATE PROPOSALS'}
       </button>
       {error && (
         <div style={{ color: '#FF6B35', fontFamily: 'var(--font-mono)', fontSize: 12 }}>{error}</div>
       )}
       {output && (
         <div style={{
-          background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(123,97,255,0.1)',
-          padding: 16, fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.8, borderRadius: 0,
+          background: 'rgba(0,0,0,0.3)', borderLeft: `2px solid ${color}`,
+          padding: '14px 16px', fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.8, 
+          marginTop: 'auto', maxHeight: 220, overflowY: 'auto'
         }}>
-          <RenderLines text={output} accentColor="#7B61FF" />
-        </div>
-      )}
-      {loading && !output && (
-        <div style={{ color: '#7B61FF', fontFamily: 'var(--font-mono)', fontSize: 12, animation: 'blink 1s step-end infinite' }}>
-          █
+          <RenderLines text={output} accentColor={color} />
         </div>
       )}
     </ToolCard>
@@ -368,6 +357,8 @@ function InterviewCard() {
   const [error, setError] = useState('');
   const scrollRef = useRef(null);
   const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+  const color = '#FF6B35';
+  const rgb = hexToRgb(color);
 
   const ask = async (question) => {
     const q = question || input;
@@ -392,30 +383,46 @@ function InterviewCard() {
   };
 
   return (
-    <ToolCard color="#FF6B35" icon={MessageSquare} title="Interview Shanttoosh" subtitle="Ask interview questions — get answers in first person" index={2}>
-      {/* Preset chips */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+    <ToolCard color={color} icon={MessageSquare} title="Interview Shanttoosh" subtitle="Ask interview questions — get answers in first person" index={2}>
+      {/* Preset chips as text rows */}
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         {interviewChips.map(chip => (
-          <button
+          <div
             key={chip}
             onClick={() => ask(chip)}
-            disabled={loading}
             style={{
-              background: 'rgba(255,107,53,0.08)', border: '1px solid rgba(255,107,53,0.2)',
-              color: 'rgba(255,107,53,0.8)', fontFamily: 'var(--font-mono)', fontSize: 10,
-              padding: '4px 10px', cursor: loading ? 'wait' : 'pointer', borderRadius: 0,
-              transition: 'all 0.2s',
+              padding: '8px 0',
+              borderBottom: '1px solid rgba(255,255,255,0.05)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              cursor: loading ? 'wait' : 'pointer',
+              color: 'rgba(226,232,240,0.55)',
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+              transition: 'all 0.2s'
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,107,53,0.4)'; e.currentTarget.style.color = '#FF6B35'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,107,53,0.2)'; e.currentTarget.style.color = 'rgba(255,107,53,0.8)'; }}
+            onMouseEnter={e => {
+              if (!loading) {
+                e.currentTarget.style.color = '#E2E8F0';
+                e.currentTarget.querySelector('span').style.color = `rgba(${rgb},0.6)`;
+              }
+            }}
+            onMouseLeave={e => {
+              if (!loading) {
+                e.currentTarget.style.color = 'rgba(226,232,240,0.55)';
+                e.currentTarget.querySelector('span').style.color = 'rgba(0,0,0,0)';
+              }
+            }}
           >
             {chip}
-          </button>
+            <span style={{ color: 'rgba(0,0,0,0)', transition: 'color 0.2s', fontFamily: 'var(--font-body)' }}>→</span>
+          </div>
         ))}
       </div>
 
       {/* Input + button */}
-      <div style={{ display: 'flex', gap: 8 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 'auto' }}>
         <input
           value={input}
           onChange={e => setInput(e.target.value)}
@@ -423,26 +430,26 @@ function InterviewCard() {
           disabled={loading}
           onKeyDown={e => e.key === 'Enter' && ask()}
           style={{
-            flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,107,53,0.15)',
+            background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)',
             fontFamily: 'var(--font-mono)', fontSize: 12, color: '#E2E8F0',
-            padding: 12, outline: 'none', height: 44, borderRadius: 0,
+            padding: 12, outline: 'none', borderRadius: 0, width: '100%',
           }}
-          onFocus={e => e.target.style.borderColor = 'rgba(255,107,53,0.4)'}
-          onBlur={e => e.target.style.borderColor = 'rgba(255,107,53,0.15)'}
+          onFocus={e => e.target.style.borderColor = 'rgba(255,255,255,0.18)'}
+          onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
         />
         <button
           onClick={() => ask()}
           disabled={loading || !input.trim()}
           style={{
-            background: 'rgba(255,107,53,0.1)', border: '1px solid rgba(255,107,53,0.3)',
-            color: '#FF6B35', fontFamily: 'var(--font-mono)', fontSize: 12,
+            width: '100%', background: `rgba(${rgb},0.08)`, border: `1px solid rgba(${rgb},0.2)`,
+            color: color, fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.1em',
             padding: '10px 16px', cursor: loading ? 'wait' : 'pointer', borderRadius: 0,
             opacity: loading || !input.trim() ? 0.6 : 1, transition: 'all 0.2s',
           }}
-          onMouseEnter={e => { if (!loading) e.currentTarget.style.background = 'rgba(255,107,53,0.2)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,107,53,0.1)'; }}
+          onMouseEnter={e => { if (!loading) { e.currentTarget.style.background = `rgba(${rgb},0.15)`; e.currentTarget.style.borderColor = `rgba(${rgb},0.35)`; } }}
+          onMouseLeave={e => { e.currentTarget.style.background = `rgba(${rgb},0.08)`; e.currentTarget.style.borderColor = `rgba(${rgb},0.2)`; }}
         >
-          {loading ? '...' : 'ASK'}
+          {loading ? 'ANALYSING...' : 'ASK'}
         </button>
       </div>
 
@@ -452,13 +459,12 @@ function InterviewCard() {
       )}
       {(output || loading) && (
         <div ref={scrollRef} style={{
-          background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,107,53,0.1)',
-          padding: 16, fontFamily: 'var(--font-body)', fontSize: 13, lineHeight: 1.75,
-          color: 'rgba(226,232,240,0.88)', maxHeight: 200, overflowY: 'auto', borderRadius: 0,
-          scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,107,53,0.12) transparent',
+          background: 'rgba(0,0,0,0.3)', borderLeft: `2px solid ${color}`,
+          padding: '14px 16px', fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.8, 
+          marginTop: 'auto', maxHeight: 220, overflowY: 'auto',
         }}>
-          {output ? output : (
-            <span style={{ color: '#FF6B35', animation: 'blink 1s step-end infinite' }}>█</span>
+          {output ? <RenderLines text={output} accentColor={color} /> : (
+            <span style={{ color, animation: 'blink 1s step-end infinite' }}>█</span>
           )}
         </div>
       )}
@@ -470,7 +476,7 @@ function InterviewCard() {
 export default function InteractiveTools() {
   return (
     <section id="tools" style={{ padding: '80px 24px', position: 'relative', zIndex: 10 }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -481,11 +487,10 @@ export default function InteractiveTools() {
             <SectionLabel>TOOLS.EXEC</SectionLabel>
           </div>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 700, color: '#E2E8F0' }}>
-            Try These{' '}
-            <span style={{ color: '#00FF9C', textShadow: '0 0 30px rgba(0,255,156,0.4)' }}>Tools</span>
+            Interactive AI Tools
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'rgba(148,163,184,0.6)', marginTop: 10 }}>
-            Interactive AI tools built on Shanttoosh's profile
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 16, color: 'rgba(226,232,240,0.5)', marginTop: 8 }}>
+            Three ways to understand Shanttoosh's fit for your role — powered by AI.
           </p>
         </motion.div>
 

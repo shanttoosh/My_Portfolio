@@ -41,9 +41,9 @@ export default function Navigation() {
           right: 0,
           zIndex: 100,
           height: 60,
-          background: scrolled ? 'rgba(5,8,16,0.92)' : 'rgba(5,8,16,0.6)',
+          background: scrolled ? 'rgba(5,8,16,0.95)' : 'rgba(5,8,16,0.6)',
           backdropFilter: 'blur(20px)',
-          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.07)' : '1px solid transparent',
+          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
           transition: 'all 0.3s ease',
           display: 'flex',
           alignItems: 'center',
@@ -72,16 +72,14 @@ export default function Navigation() {
                 fontFamily: 'var(--font-mono)',
                 fontSize: 12,
                 letterSpacing: '0.05em',
-                color: activeSection === link.id ? '#00FF9C' : 'rgba(148,163,184,0.8)',
+                color: activeSection === link.id ? '#E2E8F0' : '#4A5568',
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                paddingBottom: 2,
-                borderBottom: activeSection === link.id ? '1px solid #00FF9C' : '1px solid transparent',
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={e => { if (activeSection !== link.id) e.currentTarget.style.color = '#E2E8F0'; }}
-              onMouseLeave={e => { if (activeSection !== link.id) e.currentTarget.style.color = 'rgba(148,163,184,0.8)'; }}
+              onMouseLeave={e => { if (activeSection !== link.id) e.currentTarget.style.color = '#4A5568'; }}
             >
               {link.label}
             </button>
@@ -89,11 +87,18 @@ export default function Navigation() {
         </div>
 
         {/* Available badge */}
-        <div className="hidden md:flex" style={{ alignItems: 'center', gap: 8, marginLeft: 8 }}>
-          <div className="pulse-dot" />
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#00FF9C' }}>
-            Available for Hire
-          </span>
+        <div className="hidden md:flex" style={{
+          alignItems: 'center',
+          background: 'rgba(0,255,156,0.08)',
+          border: '1px solid rgba(0,255,156,0.2)',
+          color: '#00FF9C',
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          padding: '4px 12px',
+          borderRadius: 0,
+          marginLeft: 8,
+        }}>
+          Available
         </div>
 
         {/* Download Resume Desktop */}
