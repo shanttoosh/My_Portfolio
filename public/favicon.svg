@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="24" fill="#050810"/>
-  <text x="46" y="66" font-family="'Space Grotesk', sans-serif, monospace" font-size="52" font-weight="bold" fill="#E2E8F0" text-anchor="middle">S</text>
-  <circle cx="78" cy="74" r="8" fill="#00FF9C"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="15" fill="#08090a"/>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="14.25" fill="none" stroke="#fff" stroke-opacity="0.18" stroke-width="1.5"/>
+  <path d="M43.5 17H24a6 6 0 0 0-6 6v3a6 6 0 0 0 6 6h16a6 6 0 0 1 6 6v3a6 6 0 0 1-6 6H20.5" fill="none" stroke="#f4f5f6" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="46" cy="17" r="6.75" fill="#c8ff4d"/>
+  <circle cx="18" cy="47" r="6.75" fill="#c8ff4d"/>
 </svg>

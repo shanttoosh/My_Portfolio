@@ -1,0 +1,708 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Console interaction: custom cursor, rolling labels, redrawn underlines, the hero name and shell, the
+   moving tool strip and explorer, and the footer sign-off. Transform/opacity animations only, except the
+   cursor ring, which resizes a single fixed element.
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  --snap: cubic-bezier(0.2, 0.75, 0.15, 1);
+}
+
+/* ── Labels that roll, underlines that redraw ── */
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  line-height: 1.3;
+}
+.roll > span {
+  display: block;
+  transition: transform 0.45s var(--snap);
+}
+.roll::after {
+  content: attr(data-text) / '';
+  position: absolute;
+  left: 0;
+  top: 100%;
+  transition: transform 0.45s var(--snap);
+}
+:is(a, button):is(:hover, :focus-visible) > .roll > span,
+:is(a, button):is(:hover, :focus-visible) > .roll::after {
+  transform: translateY(-100%);
+}
+.u-link {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 1px;
+}
+.u-link:hover {
+  animation: uline 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ── Hero name: free of its mask once risen, letters lift and turn lime near the cursor ── */
+.cx-name.is-done .split-w {
+  overflow: visible;
+}
+.cx-name .split-u {
+  translate: 0 calc(var(--k, 0) * -0.16em);
+  color: color-mix(in srgb, var(--accent) calc(var(--k, 0) * 100%), var(--text));
+  transition:
+    translate 0.4s var(--snap),
+    color 0.4s ease;
+}
+
+/* ── Terminal shell ── */
+.term {
+  transition: border-color 0.3s ease;
+}
+.term:hover,
+.term.is-shell {
+  border-color: var(--border-strong);
+}
+.term-bar em {
+  margin-left: auto;
+  font-style: normal;
+  color: var(--accent);
+}
+.term.is-shell .term-body {
+  height: 312px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.term-input {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+.term-input b {
+  margin-right: 10px;
+  font-weight: 400;
+  color: var(--accent);
+}
+.term-input input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  caret-color: var(--accent);
+}
+
+/* ── Tool strip: three rows moving right to left ── */
+.tk {
+  overflow: clip;
+}
+.tk-track {
+  display: flex;
+  width: max-content;
+  animation: tk var(--dur, 40s) linear infinite;
+  animation-play-state: paused;
+}
+.tk[data-live] .tk-track {
+  animation-play-state: running;
+}
+.tk:hover .tk-track {
+  animation-play-state: paused;
+}
+.tk-copy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 12px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 18px 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 14.5px;
+  white-space: nowrap;
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease,
+    background-color 0.25s ease;
+}
+.chip .mono-logo,
+.ex-logo .mono-logo {
+  background: none;
+  border-color: currentColor;
+  color: inherit;
+}
+.chip:hover {
+  border-color: var(--accent);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ── Tool explorer ── */
+.explorer {
+  margin-bottom: 128px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-2);
+  overflow: hidden;
+}
+.ex-tabs {
+  position: relative;
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+.ex-tabs button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 54px;
+  padding: 0 20px;
+  border: 0;
+  background: none;
+  color: var(--text-3);
+  font-size: 14px;
+  transition: color 0.25s ease;
+}
+.ex-tabs button:hover {
+  color: var(--text-2);
+}
+.ex-tabs button.is-on {
+  color: var(--text);
+}
+.ex-tabs small {
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-3);
+  font: 400 11px var(--mono);
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+.ex-tabs .is-on small {
+  border-color: rgba(200, 255, 77, 0.35);
+  color: var(--accent);
+}
+.ex-ink {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  transition:
+    transform 0.45s var(--snap),
+    width 0.45s var(--snap);
+}
+.ex-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  min-height: 390px;
+}
+/* Explorer tools: free-standing official logos, no boxes; hovering lifts one and lights a soft glow behind it */
+.ex-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-content: start;
+  gap: 6px 4px;
+  padding: 26px 18px;
+}
+.ex-grid li {
+  animation: tool-in 0.5s var(--snap) both;
+  animation-delay: calc(var(--i) * 0.035s);
+}
+.ex-grid button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px 4px 12px;
+  border: 0;
+  background: none;
+  color: var(--text-2);
+  font-size: 12.5px;
+  text-align: center;
+  transition: color 0.25s ease;
+}
+.ex-grid button::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 76px;
+  height: 76px;
+  margin-left: -38px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(200, 255, 77, 0.22), rgba(200, 255, 77, 0));
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.35s ease, transform 0.45s var(--snap);
+  pointer-events: none;
+}
+.ex-grid button::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 18px;
+  height: 2px;
+  margin-left: -9px;
+  border-radius: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transform: scaleX(0.3);
+  transition: opacity 0.3s ease, transform 0.4s var(--snap);
+}
+.ex-grid button > svg,
+.ex-grid button > .mono-logo {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  filter: grayscale(0.15);
+  transition: transform 0.5s var(--snap), filter 0.3s ease;
+}
+.ex-grid button:hover,
+.ex-grid button:focus-visible {
+  color: var(--text);
+}
+.ex-grid button:hover::before,
+.ex-grid button:focus-visible::before,
+.ex-grid button.is-on::before {
+  opacity: 1;
+  transform: scale(1);
+}
+.ex-grid button:hover > svg,
+.ex-grid button:focus-visible > svg {
+  filter: none;
+  transform: translateY(-4px) scale(1.12);
+}
+.ex-grid button.is-on {
+  color: var(--accent);
+}
+.ex-grid button.is-on > svg {
+  filter: none;
+  transform: scale(1.08);
+}
+.ex-grid button.is-on::after {
+  opacity: 1;
+  transform: none;
+}
+/* Tools without an official mark: bold letters, no box */
+.ex-grid .mono-logo,
+.mq-logo .mono-logo {
+  border: 0 !important;
+  background: none !important;
+  color: var(--text);
+  font-family: var(--mono);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.ex-grid .mono-logo {
+  font-size: 15px !important;
+}
+.ex-detail {
+  padding: 26px 28px;
+  border-left: 1px solid var(--line);
+  animation: detail-in 0.45s var(--snap) both;
+}
+.ex-name {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 16px 0 12px;
+}
+.ex-logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--accent);
+}
+.ex-name h4 {
+  font: 600 clamp(30px, 3vw, 44px) / 1 var(--font-display);
+  letter-spacing: -0.045em;
+}
+.ex-what {
+  margin: 0 0 22px;
+  color: var(--text);
+  font-size: 16px;
+}
+/* Every place the tool was used: kind tag, place, then one line on how. Long lists scroll inside the panel so
+   hovering through tools never changes the page height. */
+.ex-uses-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  color: var(--text-3);
+  font: 400 11px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ex-uses-head span {
+  padding: 1px 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-2);
+}
+.ex-uses {
+  display: grid;
+  gap: 12px;
+  max-height: 272px;
+  margin: 0;
+  padding: 0 8px 0 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.ex-uses li {
+  display: grid;
+  gap: 3px;
+}
+.ex-use-place {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--text);
+  font-size: 14.5px;
+}
+.ex-use-place em {
+  flex: none;
+  width: 54px;
+  color: var(--accent);
+  font: 400 10.5px var(--mono);
+  font-style: normal;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ex-use-place strong {
+  font-weight: 500;
+}
+.ex-use-how,
+.ex-use-more {
+  padding-left: 64px;
+  color: var(--text-2);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+@media (max-width: 720px) {
+  .ex-uses {
+    max-height: none;
+    overflow: visible;
+  }
+  .ex-use-how,
+  .ex-use-more {
+    padding-left: 0;
+  }
+}
+
+/* ── Footer sign-off ── */
+.foot {
+  padding: 0 0 96px;
+  border-top: 1px solid var(--line);
+}
+.cta-circle {
+  display: grid;
+  place-items: center;
+  width: clamp(140px, 13vw, 190px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 16px;
+  font-weight: 600;
+}
+.cta-circle span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.cta-circle:hover {
+  background: #d6ff73;
+}
+.foot-ticker {
+  padding: 26px 0;
+  border-block: 1px solid var(--line);
+}
+.foot-word {
+  padding-right: 0.3em;
+  color: var(--text);
+  font: 600 clamp(48px, 7vw, 108px) / 1.05 var(--font-display);
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+}
+.foot-word::after {
+  content: '/' / '';
+  margin-left: 0.3em;
+  color: var(--accent);
+}
+.foot-word:nth-child(even) {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text-3);
+}
+.foot-word:nth-child(even)::after {
+  -webkit-text-stroke: 0;
+}
+.foot .foot-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 32px;
+  color: var(--text-3);
+  font: 400 12px var(--mono);
+}
+.foot-row nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+
+@media (max-width: 1000px) {
+  .ex-body {
+    grid-template-columns: 1fr;
+  }
+  .ex-detail {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .ex-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 680px) {
+  .ex-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 14px;
+  }
+  .ex-detail {
+    padding: 20px;
+  }
+  .chip {
+    height: 40px;
+    font-size: 13.5px;
+  }
+  .term.is-shell .term-body {
+    height: 260px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tk-track,
+  .ex-grid li,
+  .ex-detail,
+  .u-link:hover {
+    animation: none;
+  }
+  .roll > span,
+  .roll::after,
+  .cx-name .split-u {
+    transition: none;
+  }
+}
+
+/* Covers the page while it scrolls, so nothing under the cursor runs hover styles (see useEditionsMotion) */
+.scroll-shield {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  display: none;
+}
+
+/* Modals and chat messages enter with CSS (they close instantly) */
+.modal-root {
+  animation: modal-fade 0.2s ease both;
+}
+.modal {
+  animation: modal-rise 0.4s var(--snap) both;
+}
+.msg-in {
+  animation: msg-in 0.3s var(--snap) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-root,
+  .modal,
+  .msg-in {
+    animation: none;
+  }
+}
+
+/* ── Toolkit: every tool in big type with its official logo, running right to left ── */
+.mq {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  width: 100vw;
+  margin: 8px 0 88px calc(50% - 50vw);
+  overflow: clip;
+}
+.mq::before,
+.mq::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 8%;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--bg), rgba(8, 9, 10, 0));
+}
+.mq::before {
+  left: 0;
+}
+.mq::after {
+  right: 0;
+  transform: scaleX(-1);
+}
+.mq-row .tk-copy {
+  gap: 0;
+  padding-right: 0;
+}
+.mq-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.26em;
+  padding: 0.06em 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: 600 clamp(48px, 6.4vw, 96px) / 1.08 var(--font-display);
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  transition:
+    transform 0.45s var(--snap),
+    color 0.3s ease;
+}
+.mq-item::after {
+  content: '/' / '';
+  margin: 0 0.42em;
+  color: var(--text-3);
+  font-weight: 400;
+  -webkit-text-stroke: 0;
+}
+.mq-row.outline .mq-item {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+}
+.mq-logo {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 0.74em;
+  height: 0.74em;
+  transition:
+    transform 0.55s var(--snap),
+    opacity 0.3s ease;
+}
+.mq-logo svg {
+  width: 100%;
+  height: 100%;
+}
+.mq-logo .mono-logo {
+  width: 100% !important;
+  height: 100% !important;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.16em;
+  background: none;
+  color: var(--text-2);
+  font-size: 0.24em !important;
+  letter-spacing: 0;
+  -webkit-text-stroke: 0;
+}
+.mq-row.outline .mq-logo {
+  opacity: 0.7;
+}
+.mq-item:hover,
+.mq-item:focus-visible {
+  color: var(--accent);
+  transform: translateY(-8px);
+}
+.mq-row.outline .mq-item:hover,
+.mq-row.outline .mq-item:focus-visible {
+  color: transparent;
+  -webkit-text-stroke-color: var(--accent);
+}
+.mq-item:hover .mq-logo,
+.mq-item:focus-visible .mq-logo {
+  opacity: 1;
+  transform: rotate(-12deg) scale(1.14);
+}
+
+/* Explorer tools: official logos that hop when hovered */
+.ex-grid button.is-on {
+  color: var(--text);
+}
+.ex-logo svg {
+  width: 36px;
+  height: 36px;
+}
+
+/* ── Ask my AI: the small chat box at the bottom left ── */
+.dock-fab {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(200, 255, 77, 0.45);
+  border-radius: 16px;
+  background: var(--surface-2);
+  color: var(--accent);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.45s var(--snap),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+.dock-fab:hover {
+  border-color: var(--accent);
+  background: var(--surface-3);
+}
+.dock-fab i {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--surface-2);
+}
+.dock-fab.is-busy i {
+  animation: dot 1s ease-in-out infinite;
+}
+@media (max-width: 680px) {
+  .mq-item {
+    font-size: 44px;
+  }
+}
+
+/* Explorer tools: the official logo hops when the tool is hovered */
+.ex-grid .ex-tool svg,
+.ex-grid .ex-tool .mono-logo {
+  transition: transform 0.5s var(--snap);
+}
+.ex-grid .ex-tool:hover svg,
+.ex-grid .ex-tool:focus-visible svg,
+.ex-grid .ex-tool:hover .mono-logo {
+  animation: logo-hop 0.7s var(--snap);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ex-grid .ex-tool:hover svg,
+  .ex-grid .ex-tool:hover .mono-logo {
+    animation: none;
+  }
+}

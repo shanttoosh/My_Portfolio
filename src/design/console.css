@@ -1,0 +1,622 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Console theme: a dark engineering console after Linear, Resend, Warp and Poolside (Oct 2026). Near-black
+   page, graphite surfaces, hairline borders and grid lines, one lime accent, Inter Tight headlines, Inter body
+   and JetBrains Mono labels. Motion is the work itself (a typing terminal, a dot matrix, product clips),
+   never decoration; no gradients, glows or blurs. Loaded after editions.css, which keeps the layout and the
+   scroll-driven motion.
+   ───────────────────────────────────────────────────────────────────────────── */
+:root,
+[data-theme='dark'],
+[data-theme='light'] {
+  --bg: #08090a;
+  --bg-2: #0d0e10;
+  --surface: #111214;
+  --surface-solid: #111214;
+  --surface-2: #17181b;
+  --surface-3: #1e2024;
+  --line: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.085);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --text: #f4f5f6;
+  --text-90: #e6e7e9;
+  --text-2: #9a9fa8;
+  --text-3: #80858e;
+  --accent: #c8ff4d;
+  --accent-2: #c8ff4d;
+  --accent-3: #e2ff9e;
+  --accent-ink: #0b0d02;
+  --accent-soft: rgba(200, 255, 77, 0.12);
+  --accent-glow: rgba(200, 255, 77, 0);
+  --pv-bg: #0f1012;
+  --ok: #c8ff4d;
+  --warn: #ffb224;
+  --bad: #ff5c5c;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-sm: none;
+
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  --nav-h: 56px;
+  --fs-h3: clamp(32px, 4vw, 56px);
+  --dots: radial-gradient(circle, rgba(255, 255, 255, 0.11) 1px, transparent 1.4px);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  letter-spacing: -0.011em;
+}
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+:focus-visible {
+  outline-color: var(--accent);
+}
+.u-link {
+  color: var(--text);
+  text-decoration-color: var(--text-3);
+}
+.u-link:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/* Mono labels */
+.kicker,
+.status,
+.ch-index {
+  font: 400 11.5px / 1.4 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* ── Top bar ── */
+.topbar {
+  height: var(--nav-h);
+  padding: 0 20px;
+  background: rgba(8, 9, 10, 0.9);
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  font-size: 14px;
+}
+.brand b {
+  font-weight: 500;
+}
+.brand span {
+  color: var(--text-3);
+}
+.topbar-link {
+  color: var(--text-2);
+  font-size: 13.5px;
+}
+.topbar-link:hover {
+  color: var(--text);
+}
+.pill-btn {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 13.5px;
+}
+.pill-btn:hover {
+  background: #d9dbde;
+}
+.menu {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  border-radius: 10px;
+}
+
+/* Chapter links in the top bar on wide screens; phones keep the floating chapter pill instead */
+.top-nav {
+  display: flex;
+  gap: 2px;
+  margin-left: 8px;
+}
+.top-nav a {
+  position: relative;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 13.5px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.top-nav a:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+.top-nav a[aria-current='true'] {
+  color: var(--text);
+}
+.top-nav a[aria-current='true']::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+@media (max-width: 900px) {
+  .top-nav {
+    display: none;
+  }
+}
+@media (min-width: 901px) {
+  .chapter-pill {
+    display: none;
+  }
+}
+
+/* Hairline column grid, set 40px outside the content (12px on narrow screens) so its outer lines never touch text */
+.cx-hero::before,
+.ch::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: min(var(--wrap) + 80px, 100% - 24px);
+  transform: translateX(-50%);
+  border-inline: 1px solid var(--line);
+  background: repeating-linear-gradient(90deg, transparent 0 calc(100% / 6 - 1px), var(--line) calc(100% / 6 - 1px) calc(100% / 6));
+  pointer-events: none;
+}
+
+/* ── Hero ── */
+.cx-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 56px;
+  padding: calc(var(--nav-h) + 9vh) 0 40px;
+  overflow: hidden;
+}
+.cx-hero-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-2);
+}
+.status i {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.status i::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  animation: ping 2.4s ease-out infinite;
+}
+.cx-hero h1 {
+  font: 600 clamp(52px, 10.5vw, 168px) / 0.9 var(--font-display);
+  letter-spacing: -0.058em;
+  white-space: nowrap;
+}
+.cx-lead {
+  max-width: 500px;
+  margin: 26px 0 30px;
+  font-size: clamp(17px, 1.45vw, 20px);
+  line-height: 1.45;
+  color: var(--text-2);
+}
+.cx-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.btn-solid,
+.btn-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.btn-solid {
+  border: 0;
+  background: var(--text);
+  color: var(--bg);
+}
+.btn-solid:hover {
+  background: #d9dbde;
+}
+.btn-line {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+}
+.btn-line:hover {
+  border-color: var(--text-3);
+  background: var(--surface);
+}
+
+/* Intro: Shanttoosh and his robot, cut out and standing on the page beside the name, with no frame. Under the
+   buttons on narrower screens. */
+.hero-char {
+  width: min(100%, 280px);
+}
+.hc-stage {
+  position: relative;
+  aspect-ratio: var(--ratio);
+}
+.hc-stage img,
+.hc-stage video,
+.hc-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hc-stage video,
+.hc-stage canvas,
+.hc-stage.is-drawn img {
+  opacity: 0;
+}
+.hc-stage video {
+  pointer-events: none;
+}
+.hc-stage.is-drawn canvas {
+  opacity: 1;
+}
+/* The speaker button, centred under him */
+.hc-line {
+  margin-top: 8px;
+  text-align: center;
+}
+.hc-sound {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.hc-sound:hover,
+.hc-sound:focus-visible {
+  border-color: rgba(200, 255, 77, 0.45);
+  color: var(--accent);
+}
+@media (min-width: 1001px) {
+  .cx-hero-grid {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: clamp(28px, 3vw, 56px);
+  }
+  /* The name fills its own column, so it never runs under the character */
+  .cx-hero-copy {
+    container-type: inline-size;
+  }
+  .cx-hero h1 {
+    font-size: clamp(52px, 8.4vw, 118px);
+    font-size: min(17cqi, 150px);
+  }
+  .hero-char {
+    width: auto;
+  }
+  .hc-stage {
+    height: clamp(340px, 100svh - 270px, 540px);
+  }
+}
+
+/* Terminal */
+.term {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-2);
+  overflow: hidden;
+  contain: layout paint;
+  font: 400 13.5px / 1.75 var(--mono);
+}
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-3);
+  font-size: 12px;
+}
+.term-bar i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2a2c30;
+}
+.term-bar span {
+  margin-left: 8px;
+}
+.term-body {
+  min-height: 312px;
+  padding: 18px 20px 22px;
+}
+.term-body p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.term-body .cmd {
+  color: var(--text);
+}
+.term-body .cmd b {
+  margin-right: 10px;
+  font-weight: 400;
+  color: var(--accent);
+}
+.term-body .out {
+  margin-bottom: 10px;
+  color: var(--text-2);
+}
+.caret {
+  display: inline-block;
+  width: 8px;
+  height: 1.15em;
+  margin-left: 2px;
+  vertical-align: -0.22em;
+  background: var(--accent);
+  animation: caret 1.05s steps(2, jump-none) infinite;
+}
+
+/* Stats strip */
+
+/* ── Chapter header: index and title on the left, a one-line summary on the right, over the hairline grid ── */
+.ch {
+  position: relative;
+  padding: calc(var(--nav-h) + 96px) 0 0;
+  border-top: 1px solid var(--line);
+}
+.ch-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  align-items: end;
+  gap: 24px 64px;
+}
+.ch-index {
+  display: block;
+  color: var(--accent);
+}
+.ch-index em {
+  font-style: normal;
+  color: var(--text-3);
+}
+.ch-title {
+  margin: 14px 0 0;
+  font: 600 clamp(52px, 7.4vw, 116px) / 0.92 var(--font-display);
+  letter-spacing: -0.055em;
+}
+.ch-sub {
+  margin: 0 0 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+/* ── Approach: the four steps as one pipeline ── */
+
+/* ── Chapter intro ── */
+.intro {
+  padding-top: 112px;
+}
+.intro h3 {
+  font: 500 var(--fs-h3) / 1.02 var(--font-display);
+  letter-spacing: -0.04em;
+  color: var(--text);
+}
+.intro-side p {
+  color: var(--text-2);
+}
+
+/* ── Cards ── */
+.frame {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.role .tags li {
+  border-color: var(--border);
+  border-radius: 6px;
+  color: var(--text-2);
+  font: 400 11.5px var(--mono);
+}
+.card-note {
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
+
+/* Kept components, flattened onto the palette */
+.pv-estate,
+.poster {
+  background: var(--surface-2);
+}
+.pv-bar i,
+.tier-meter span.is-lit {
+  background: var(--accent);
+}
+.mono-logo {
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+.btn-primary {
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: none;
+}
+.btn-primary:hover {
+  background: #d9dbde;
+}
+.pv-user,
+.pv-nodes li:last-child .pv-node {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Tool logos in one ink */
+
+.filter {
+  height: 30px;
+  border-color: var(--border-strong);
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 13px;
+}
+.filter:hover {
+  color: var(--text);
+}
+
+/* Roles, steps */
+.role {
+  border-top-color: var(--line);
+}
+.role h4 {
+  font: 600 clamp(28px, 2.8vw, 40px) / 1 var(--font-display);
+  letter-spacing: -0.045em;
+}
+.role p,
+.role-title {
+  color: var(--text-2);
+}
+
+/* ── Assistant ── */
+.panel {
+  border-color: var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.pipeline li {
+  border-color: var(--border);
+  background: var(--surface-2);
+}
+
+/* ── Contact ── */
+.field input,
+.field textarea {
+  border-color: rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+}
+/* One fixed height for the single-line boxes, so nothing (autofill, a password manager's icon) can make them differ */
+.field input {
+  height: 48px;
+  padding-block: 0;
+}
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--accent);
+}
+.field-label {
+  color: var(--text-2);
+}
+.channels,
+.channels a {
+  border-color: var(--line);
+}
+.channels strong {
+  font: 500 18px / 1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+.channels a:hover,
+.channels a:hover span {
+  color: var(--accent);
+}
+
+/* ── Floating controls ── */
+.chapter-pill > button {
+  height: 36px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+.chapter-pill .dots {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.foot {
+  border-top-color: var(--line);
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+/* ── Smaller screens ── */
+@media (max-width: 1000px) {
+  .cx-hero-grid,
+  .ch-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .ch {
+    min-height: auto;
+    padding-top: calc(var(--nav-h) + 72px);
+  }
+  .cx-hero {
+    min-height: auto;
+  }
+  .cx-hero::before,
+  .ch::before {
+    background: none;
+  }
+}
+@media (max-width: 680px) {
+  .term-body {
+    min-height: 260px;
+    font-size: 12.5px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .status i::after,
+  .caret {
+    animation: none;
+  }
+}

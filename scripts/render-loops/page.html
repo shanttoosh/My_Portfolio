@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>render-loops</title>
+    <style>
+      html, body { margin: 0; background: #000; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <canvas id="out" width="1280" height="720"></canvas>
+    <script type="module">
+      // Loaded by render.mjs as page.html?loop=<name>. Exposes window.renderFrame(i).
+      // Two kinds of loop module are supported:
+      //   { draw(i, ctx), grain }  flat print art drawn straight onto the 2D canvas, then a static grain
+      //   { render(i, buf), post } float light accumulation finished by makePost()
+      import { W, H, Buffer3, makePost, makeGrain } from './lib/core.js'
+      const name = new URLSearchParams(location.search).get('loop')
+      try {
+        const mod = await import(`./loops/${name}.js`)
+        const canvas = document.getElementById('out')
+        const ctx = canvas.getContext('2d', { willReadFrequently: true })
+        const loop = mod.create()
+        if (loop.draw) {
+          const grain = makeGrain(loop.grain || {})
+          window.renderFrame = (i) => {
+            ctx.save()
+            loop.draw(i, ctx)
+            ctx.restore()
+            grain(ctx)
+          }
+        } else {
+          const img = ctx.createImageData(W, H)
+          const buf = new Buffer3(W, H)
+          const post = makePost(loop.post || {})
+          window.renderFrame = (i) => {
+            buf.clear()
+            loop.render(i, buf)
+            post(buf, img)
+            ctx.putImageData(img, 0, 0)
+          }
+        }
+        window.loopReady = true
+      } catch (e) {
+        window.loopError = String((e && e.stack) || e)
+      }
+    </script>
+  </body>
+</html>

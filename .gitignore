@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .env
+
+# Film sources: clips, stills and frames are large and regenerable; only the scripts are committed.
+media/*
+!media/*.sh

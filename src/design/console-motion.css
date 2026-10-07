@@ -1,0 +1,182 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Console motion: load choreography for the hero, scroll-driven chapter headers and cursor effects.
+   Everything animates transform or opacity only: CSS animations and scroll-driven timelines run on the
+   compositor, and the cursor effects write one transform or a few custom properties per frame.
+   ───────────────────────────────────────────────────────────────────────────── */
+.split .split-w,
+.split .split-u {
+  display: inline-block;
+}
+.split.mask .split-w {
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+/* ── Hero, on load ── */
+.in {
+  animation: fade-up 0.9s cubic-bezier(0.2, 0.75, 0.15, 1) both;
+  animation-delay: var(--d, 0s);
+}
+.cx-lead.in {
+  animation-name: slide-up;
+}
+.cx-hero h1 .split-u {
+  animation: char-up 1s cubic-bezier(0.2, 0.75, 0.15, 1) both;
+  animation-delay: calc(0.12s + var(--i) * 0.035s);
+}
+.term-wrap {
+  perspective: 1400px;
+}
+.term-wrap .term {
+  transform-origin: 0% 50%;
+  animation: term-in 1.2s cubic-bezier(0.2, 0.75, 0.15, 1) 0.35s both;
+}
+.cx-hero::before {
+  transform-origin: 50% 0;
+  animation: grid-draw 1.4s cubic-bezier(0.2, 0.75, 0.15, 1) both;
+}
+
+/* The hero's dot grid, and lime dots lighting up under the cursor */
+.cx-hero {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.045) 1px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+.cx-spot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: 360px;
+  height: 360px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  background-image: radial-gradient(circle, rgba(200, 255, 77, 0.8) 1.1px, transparent 1.7px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent);
+  mask-image: radial-gradient(closest-side, #000, transparent);
+  will-change: transform;
+}
+.cx-hero.is-spot .cx-spot {
+  opacity: 1;
+}
+.cx-hero-grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Chapter headers ── */
+.ch {
+  overflow: clip;
+  view-timeline: --ch;
+}
+/* Titles and statements are scrubbed by the scroll, so they rewind when you scroll back: title letters
+   rise out of their mask one after another, statement words light up in reading order. */
+.ch-title {
+  view-timeline: --title;
+}
+.intro h3 {
+  view-timeline: --fill;
+}
+
+/* Magnetic buttons spring back when the cursor leaves */
+[data-magnetic] {
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.75, 0.15, 1),
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Reading progress along the top bar */
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+/* A lime rule drawing across each role */
+.role {
+  position: relative;
+  view-timeline: --role;
+}
+.role::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.6;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+@supports (animation-timeline: view()) {
+  .ch::before {
+    transform-origin: 50% 0;
+    animation: grid-draw linear both;
+    animation-timeline: --ch;
+    animation-range: entry 0% entry 90%;
+  }
+  .ch-title .split-u {
+    animation: char-rise linear both;
+    animation-timeline: --title;
+    animation-range: cover calc(6% + var(--i) * 2%) cover calc(28% + var(--i) * 2%);
+  }
+  .fill .split-u {
+    animation: word-fill linear both;
+    animation-timeline: --fill;
+    animation-range: cover calc(12% + var(--i) * 2%) cover calc(24% + var(--i) * 2%);
+  }
+  .progress {
+    animation: grow linear both;
+    animation-timeline: scroll(root);
+  }
+  .role::before {
+    animation: grow linear both;
+    animation-timeline: --role;
+    animation-range: entry 20% cover 45%;
+  }
+  /* The hero drifts up at two speeds as you leave it */
+  .cx-hero-copy {
+    animation: hero-lift linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 90vh;
+  }
+  .term-wrap {
+    animation: hero-lift-slow linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 90vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .in,
+  .cx-hero h1 .split-u,
+  .term-wrap,
+  .term-wrap .term,
+  .cx-hero::before,
+  .cx-hero-copy,
+  .ch::before,
+  .role::before {
+    animation: none !important;
+  }
+  .progress {
+    display: none;
+  }
+  .ch-title .split-u,
+  .fill .split-u {
+    animation: none !important;
+  }
+  .role::before {
+    transform: none;
+  }
+}
